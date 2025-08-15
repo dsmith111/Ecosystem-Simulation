@@ -2,10 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import random
-from ..core.herbivore import Herbivore
-from ..core.predator import Predator
-from ..core.plant import Plant
-from ..core.world_manager import WorldManager
+from ..core import Herbivore, Predator, Plant, WorldManager
 
 
 def main():

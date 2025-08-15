@@ -9,10 +9,7 @@ import os
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'src'))
 
-from ecosystem_simulation.core.herbivore import Herbivore
-from ecosystem_simulation.core.predator import Predator
-from ecosystem_simulation.core.plant import Plant
-from ecosystem_simulation.core.world_manager import WorldManager
+from ecosystem_simulation.core import Herbivore, Predator, Plant, WorldManager
 
 
 def test_basic_functionality():
