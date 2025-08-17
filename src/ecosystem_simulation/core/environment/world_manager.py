@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import List, Any
+from typing import List, Any, Optional, Tuple
 
 
 class WorldManager:
@@ -87,3 +87,60 @@ class WorldManager:
         plt.ylabel('Y Position')
         plt.grid(True, alpha=0.3)
         plt.pause(0.01)  # Small pause to allow real-time updating
+
+    @staticmethod
+    def setup_continuous_plot(map_size: int) -> Tuple[Any, Any]:
+        """Setup matplotlib for continuous plotting with better performance"""
+        plt.ion()  # Turn on interactive mode
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_xlim(1, map_size)
+        ax.set_ylim(1, map_size)
+        ax.set_xlabel('X Position')
+        ax.set_ylabel('Y Position')
+        ax.grid(True, alpha=0.3)
+        plt.tight_layout()
+        return fig, ax
+
+    @staticmethod 
+    def update_continuous_plot(ax: Any, object_list: List[Any], iteration: int, framerate: float = 0.05, map_size: int = 60):
+        """Efficiently update the plot for continuous visualization"""
+        ax.clear()
+        ax.set_xlim(1, map_size)
+        ax.set_ylim(1, map_size)
+        ax.set_xlabel('X Position')
+        ax.set_ylabel('Y Position')
+        ax.grid(True, alpha=0.3)
+        
+        # Separate objects by type for plotting
+        herbivores = []
+        predators = []
+        plants = []
+        
+        for obj in object_list:
+            if obj.type == "herbivore":
+                herbivores.append(obj.location)
+            elif obj.type == "predator":
+                predators.append(obj.location)
+            elif obj.type == "plant":
+                plants.append(obj.location)
+        
+        # Plot each type with different markers and colors
+        if herbivores:
+            herbivores = np.array(herbivores)
+            ax.scatter(herbivores[:, 1], herbivores[:, 0], 
+                      c='blue', marker='*', s=50, label='Herbivores')
+        
+        if predators:
+            predators = np.array(predators)
+            ax.scatter(predators[:, 1], predators[:, 0], 
+                      c='red', marker='x', s=50, label='Predators')
+        
+        if plants:
+            plants = np.array(plants)
+            ax.scatter(plants[:, 1], plants[:, 0], 
+                      c='green', marker='^', s=30, label='Plants')
+        
+        ax.legend()
+        ax.set_title(f'Ecosystem Simulation - Iteration {iteration}')
+        
+        plt.pause(framerate)  # Control framerate

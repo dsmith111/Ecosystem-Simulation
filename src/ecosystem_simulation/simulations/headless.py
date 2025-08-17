@@ -13,8 +13,21 @@ import random
 from ..core import Herbivore, Predator, Plant, WorldManager
 
 
-def run_simulation(iterations=10, save_plots=True, world_size=60):
-    """Run ecosystem simulation in non-interactive mode"""
+def run_simulation(iterations=10, save_plots=True, world_size=60, continuous_viz=False, framerate=0.05):
+    """Run ecosystem simulation in non-interactive mode
+    
+    Args:
+        iterations: Number of simulation iterations to run
+        save_plots: Whether to save plots to PNG files
+        world_size: Size of the simulation world (world_size x world_size)
+        continuous_viz: (Deprecated) Use interactive module for continuous visualization
+        framerate: (Deprecated) Use interactive module for framerate control
+        
+    Note:
+        For continuous visualization, use the interactive module:
+        from ecosystem_simulation.simulations.interactive import main
+        main(framerate=0.1, save_plots=True, iterations=50)
+    """
     
     # Number of creatures
     amount_herb = round(world_size / 3)
@@ -63,8 +76,15 @@ def run_simulation(iterations=10, save_plots=True, world_size=60):
     print(f"Predators: {amount_pred}")
     print(f"Plants: {amount_plant}")
     print(f"World size: {world_size}x{world_size}")
-    print(f"Running {iterations} iterations...\n")
-    
+    print(f"Running {iterations} iterations...")
+    if continuous_viz:
+        print("⚠️  WARNING: continuous_viz=True has no effect in headless mode")
+        print("   For continuous visualization, use: python run_continuous.py")
+        print("   Or use the interactive module directly")
+    if save_plots:
+        print("Plot saving enabled")
+    print()
+
     # Track statistics
     stats = []
     
@@ -140,7 +160,7 @@ def run_simulation(iterations=10, save_plots=True, world_size=60):
         print(f"Iteration {iteration + 1}: H={herbivore_count}, P={predator_count}, "
               f"Pl={plant_count}, Time={elapsed_time:.3f}s")
         
-        # Save plot every few iterations
+        # Save plot every few iterations (traditional mode)
         if save_plots and (iteration % 5 == 0 or iteration == iterations - 1):
             plt.figure(figsize=(10, 8))
             

@@ -5,8 +5,14 @@ import random
 from ..core import Herbivore, Predator, Plant, WorldManager
 
 
-def main():
-    """Main ecosystem simulation"""
+def main(framerate=0.1, save_plots=False, iterations=100):
+    """Main ecosystem simulation
+    
+    Args:
+        framerate: Time between visual updates (lower = faster)
+        save_plots: Whether to save plots to PNG files periodically
+        iterations: Number of iterations to run (default: 100)
+    """
     # Size of world
     world_size = 60
     
@@ -54,11 +60,16 @@ def main():
     print(f"Predators: {amount_pred}")
     print(f"Plants: {amount_plant}")
     print(f"World size: {world_size}x{world_size}")
-    print("Press Ctrl+C to stop the simulation\n")
+    print(f"Running {iterations} iterations...")
+    print(f"Framerate: {framerate}s per update")
+    if save_plots:
+        print("Plot saving enabled")
+    print("Press Ctrl+C to stop the simulation")
+    print()
     
     # Run simulation
     try:
-        for iteration in range(100):
+        for iteration in range(iterations):
             start_time = time.time()
             
             # Update Objects
@@ -113,12 +124,18 @@ def main():
             print(f"Iteration {iteration + 1}: H={herbivore_count}, P={predator_count}, "
                   f"Pl={plant_count}, Time={elapsed_time:.3f}s")
             
+            # Optional plot saving for interactive mode  
+            if save_plots and (iteration % 5 == 0 or iteration == iterations - 1):
+                filename = f'ecosystem_iteration_{iteration + 1:03d}.png'
+                plt.savefig(filename, dpi=150, bbox_inches='tight')
+                print(f"  Saved plot: {filename}")
+            
             # Check if ecosystem has collapsed
             if herbivore_count == 0 and predator_count == 0:
                 print("Ecosystem has collapsed - no creatures remain!")
                 break
             
-            plt.pause(0.1)
+            plt.pause(framerate)
     
     except KeyboardInterrupt:
         print("\nSimulation stopped by user")

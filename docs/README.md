@@ -11,6 +11,8 @@ This is a Python port of the MATLAB ecosystem simulation. It implements a comple
   - **Predators** (red X's) - hunt herbivores 
   - **Plants** (green triangles) - food for herbivores
 - **Real-time visualization** using matplotlib
+- **Continuous visualization mode** - smooth, real-time updates every iteration
+- **Framerate control** - customizable update speed for performance tuning
 - **Population dynamics** following predator-prey models
 
 ## Creature Behavior
@@ -50,6 +52,15 @@ python run_interactive.py
 python run_headless.py
 ```
 
+#### Continuous Visualization Mode (NEW!)
+```bash
+python run_continuous.py
+```
+- Real-time visualization that updates every iteration
+- Smooth, continuous viewing experience
+- Customizable framerate for performance tuning
+```
+
 #### Examples
 ```bash
 python examples/example.py
@@ -63,14 +74,33 @@ import sys
 sys.path.insert(0, 'src')
 from ecosystem_simulation import run_simulation, Herbivore, Predator, Plant
 
-# Run a headless simulation
+# Run a traditional headless simulation
 stats = run_simulation(iterations=50, world_size=60)
+
+# Run with continuous visualization (NEW!)
+stats = run_simulation(
+    iterations=50, 
+    continuous_viz=True, 
+    framerate=0.1, 
+    save_plots=False
+)
 
 # Create individual creatures
 herbivore = Herbivore([10, 10])
 predator = Predator([20, 20])
 plant = Plant([5, 5])
 ```
+
+### New Visualization Features
+
+The simulation now supports **continuous, real-time visualization**:
+
+- **Continuous Mode**: Updates display every iteration instead of saving intermittent plots
+- **Framerate Control**: Customize update speed (e.g., `framerate=0.1` for 10 FPS)
+- **Optional Saving**: Disable plot files for better performance (`save_plots=False`)
+- **Backward Compatible**: All existing code continues to work unchanged
+
+See [CONTINUOUS_VISUALIZATION.md](docs/CONTINUOUS_VISUALIZATION.md) for detailed documentation.
 
 ### Testing
 
