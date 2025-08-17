@@ -13,8 +13,16 @@ import random
 from ..core import Herbivore, Predator, Plant, WorldManager
 
 
-def run_simulation(iterations=10, save_plots=True, world_size=60):
-    """Run ecosystem simulation in non-interactive mode"""
+def run_simulation(iterations=10, save_plots=True, world_size=60, continuous_viz=False, framerate=0.05):
+    """Run ecosystem simulation in non-interactive mode
+    
+    Args:
+        iterations: Number of simulation iterations to run
+        save_plots: Whether to save plots to PNG files
+        world_size: Size of the simulation world (world_size x world_size)
+        continuous_viz: Enable continuous real-time visualization
+        framerate: Time between visualization updates (lower = faster)
+    """
     
     # Number of creatures
     amount_herb = round(world_size / 3)
@@ -63,10 +71,27 @@ def run_simulation(iterations=10, save_plots=True, world_size=60):
     print(f"Predators: {amount_pred}")
     print(f"Plants: {amount_plant}")
     print(f"World size: {world_size}x{world_size}")
-    print(f"Running {iterations} iterations...\n")
-    
+    print(f"Running {iterations} iterations...")
+    if continuous_viz:
+        print(f"Continuous visualization enabled (framerate: {framerate}s)")
+    if save_plots:
+        print("Plot saving enabled")
+    print()
+
     # Track statistics
     stats = []
+    
+    # Setup continuous visualization if enabled
+    fig, ax = None, None
+    if continuous_viz:
+        # For continuous viz, we need to temporarily switch to a backend that supports display
+        # But check if we're in a headless environment
+        try:
+            fig, ax = WorldManager.setup_continuous_plot(world_size)
+        except Exception as e:
+            print(f"Warning: Cannot setup continuous visualization in headless environment: {e}")
+            print("Falling back to regular plot saving mode")
+            continuous_viz = False
     
     # Run simulation
     for iteration in range(iterations):
@@ -140,7 +165,14 @@ def run_simulation(iterations=10, save_plots=True, world_size=60):
         print(f"Iteration {iteration + 1}: H={herbivore_count}, P={predator_count}, "
               f"Pl={plant_count}, Time={elapsed_time:.3f}s")
         
-        # Save plot every few iterations
+        # Continuous visualization update
+        if continuous_viz and ax is not None:
+            try:
+                WorldManager.update_continuous_plot(ax, object_list, iteration + 1, framerate, world_size)
+            except Exception as e:
+                print(f"Warning: Continuous visualization failed: {e}")
+        
+        # Save plot every few iterations (traditional mode)
         if save_plots and (iteration % 5 == 0 or iteration == iterations - 1):
             plt.figure(figsize=(10, 8))
             
@@ -190,6 +222,10 @@ def run_simulation(iterations=10, save_plots=True, world_size=60):
         if herbivore_count == 0 and predator_count == 0:
             print("Ecosystem has collapsed - no creatures remain!")
             break
+    
+    # Clean up continuous visualization
+    if continuous_viz and fig is not None:
+        plt.ioff()
     
     print(f"\nSimulation completed after {len(stats)} iterations")
     return stats
