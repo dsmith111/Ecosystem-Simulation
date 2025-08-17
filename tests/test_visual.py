@@ -29,6 +29,6 @@ plt.ylabel('Y Position')
 plt.grid(True, alpha=0.3)
 
 # Save instead of showing since we're in headless environment
-plt.savefig('/home/runner/work/MATLAB_Projects/MATLAB_Projects/Ecosystem_Python/test_plot.png', dpi=150, bbox_inches='tight')
+plt.savefig('test_plot.png', dpi=150, bbox_inches='tight')
 print("✅ Plot test successful! Saved test_plot.png")
 print("Matplotlib visualization is working correctly.")

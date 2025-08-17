@@ -10,10 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import random
-from herbivore import Herbivore
-from predator import Predator
-from plant import Plant
-from world_manager import WorldManager
+from ..core import Herbivore, Predator, Plant, WorldManager
 
 
 def run_simulation(iterations=10, save_plots=True, world_size=60):
